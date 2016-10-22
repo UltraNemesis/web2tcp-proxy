@@ -1,0 +1,20 @@
+{
+  "frontend" : {
+    "endpoint": ":8000",
+    "route": "gateway",
+    "tls": {
+      "enabled": false,
+      "certFile": "cert.pem",
+      "certKeyFile": "certkey.pem"
+    }
+  },
+  "backend": {
+    "endpoint": "localhost:3000",
+    "proxyProtocol": false,
+    "tls": {
+      "enabled": true,
+      "skipVerify": true,
+      "certAuthorityFile": "cacert.pem"
+    }     
+  }
+}
