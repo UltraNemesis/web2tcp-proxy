@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-type WS2TCPServer struct {
+type Web2TCPServer struct {
 	frontend *Frontend
 	backend  *Backend
 }
@@ -15,13 +15,13 @@ type Configuration struct {
 	Backend  BackendOptions
 }
 
-func NewServer(conf Configuration) *WS2TCPServer {
+func NewServer(conf Configuration) *Web2TCPServer {
 	frontend := NewFrontend(&conf.Frontend)
 	backend := NewBackend(&conf.Backend)
 
 	setupTunnel(conf.Frontend.Route, frontend, backend)
 
-	server := &WS2TCPServer{
+	server := &Web2TCPServer{
 		frontend: frontend,
 		backend:  backend,
 	}
@@ -76,6 +76,6 @@ func closeSessions(source, target Session) {
 	}
 }
 
-func (s *WS2TCPServer) Start() {
+func (s *Web2TCPServer) Start() {
 	s.frontend.Listen()
 }
