@@ -28,21 +28,6 @@ func NewBackend(options *BackendOptions) *Backend {
 	return backend
 }
 
-func (b *Backend) NewConnection() (*tls.Conn, error) {
-	log.Println(b)
-	tlsConfig := &tls.Config{
-		InsecureSkipVerify: b.options.Tls.SkipVerify,
-	}
-
-	conn, err := tls.Dial("tcp", b.options.Endpoint, tlsConfig)
-
-	if err != nil {
-		log.Println(err)
-	}
-
-	return conn, err
-}
-
 func (b *Backend) NewSession() (Session, error) {
 	tlsConfig := &tls.Config{
 		InsecureSkipVerify: b.options.Tls.SkipVerify,
