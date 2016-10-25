@@ -10,6 +10,7 @@ import (
 )
 
 type wsSession struct {
+	SessionBase
 	conn      *websocket.Conn
 	readLock  sync.Mutex
 	writeLock sync.Mutex
@@ -18,19 +19,12 @@ type wsSession struct {
 
 func newWSSession(conn *websocket.Conn) *wsSession {
 	s := &wsSession{
-		conn:   conn,
-		active: true,
+		SessionBase: newSessionBase("ws"),
+		conn:        conn,
+		active:      true,
 	}
 
 	return s
-}
-
-func (s *wsSession) Type() string {
-	return "ws"
-}
-
-func (s *wsSession) ID() string {
-	return ""
 }
 
 func (s *wsSession) Read() (string, error) {

@@ -8,25 +8,19 @@ import (
 )
 
 type sjsSession struct {
+	SessionBase
 	conn   sockjs.Session
 	active bool
 }
 
 func newSockJSSession(conn sockjs.Session) *sjsSession {
 	s := &sjsSession{
-		conn:   conn,
-		active: true,
+		SessionBase: newSessionBase("sockjs"),
+		conn:        conn,
+		active:      true,
 	}
 
 	return s
-}
-
-func (s *sjsSession) Type() string {
-	return "sockjs"
-}
-
-func (s *sjsSession) ID() string {
-	return ""
 }
 
 func (s *sjsSession) Read() (string, error) {

@@ -9,3 +9,23 @@ type Session interface {
 	Close() error
 	IsActive() bool
 }
+
+type SessionBase struct {
+	sid   string
+	stype string
+}
+
+func newSessionBase(stype string) SessionBase {
+	return SessionBase{
+		sid:   newUUID(),
+		stype: stype,
+	}
+}
+
+func (s SessionBase) ID() string {
+	return s.sid
+}
+
+func (s SessionBase) Type() string {
+	return s.stype
+}

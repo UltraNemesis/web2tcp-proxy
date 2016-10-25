@@ -62,11 +62,13 @@ func (f *Frontend) RouteHandler(route string, handler func(Session)) {
 
 	f.router.PathPrefix("/" + route + "/websocket").HandlerFunc(func(resp http.ResponseWriter, req *http.Request) {
 		wsConn, _ := wsUpgrader.Upgrade(resp, req, nil)
-		go handler(&wsSession{conn: wsConn})
+		//go handler(&wsSession{conn: wsConn})
+		go handler(newWSSession(wsConn))
 	})
 
 	sockjsHandler := sockjs.NewHandler("/"+route, sockjsOptions, func(session sockjs.Session) {
-		go handler(&sjsSession{conn: session})
+		go handler(newSockJSSession(session))
+		//go handler(&sjsSession{conn: session})
 	})
 
 	f.router.PathPrefix("/" + route + "/").Handler(sockjsHandler)

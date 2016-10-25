@@ -8,6 +8,7 @@ import (
 )
 
 type tcpSession struct {
+	SessionBase
 	conn    net.Conn
 	bufConn *bufio.Reader
 	buf     []byte
@@ -16,21 +17,14 @@ type tcpSession struct {
 
 func newTcpSession(conn net.Conn) *tcpSession {
 	s := &tcpSession{
-		conn:    conn,
-		bufConn: bufio.NewReader(conn),
-		buf:     make([]byte, 3072),
-		active:  true,
+		SessionBase: newSessionBase("tcp"),
+		conn:        conn,
+		bufConn:     bufio.NewReader(conn),
+		buf:         make([]byte, 3072),
+		active:      true,
 	}
 
 	return s
-}
-
-func (s *tcpSession) Type() string {
-	return "tcp"
-}
-
-func (s *tcpSession) ID() string {
-	return ""
 }
 
 func (s *tcpSession) Read() (string, error) {
