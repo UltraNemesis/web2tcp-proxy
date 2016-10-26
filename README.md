@@ -14,7 +14,6 @@ web2tcp-proxy is build in Go langauge. In order to build the code, make sure you
 
 Update the provided configuration file as per requirement and and ensure that its in the same directory as the executable. Then run the executable.
  
-Note that the configuration file can be in yaml or toml format as well.
 
     {
       "frontend" : {
@@ -36,6 +35,8 @@ Note that the configuration file can be in yaml or toml format as well.
         }     
       }
     }
+
+Note that the configuration file can be in yaml or toml format as well.
 
 ##Client side
 
