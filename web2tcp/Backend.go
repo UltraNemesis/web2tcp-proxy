@@ -4,6 +4,7 @@ package web2tcp
 import (
 	"crypto/tls"
 	"log"
+	"net"
 )
 
 type BackendOptions struct {
@@ -33,7 +34,14 @@ func (b *Backend) NewSession() (Session, error) {
 		InsecureSkipVerify: b.options.Tls.SkipVerify,
 	}
 
-	conn, err := tls.Dial("tcp", b.options.Endpoint, tlsConfig)
+	var conn net.Conn
+	var err error
+
+	if b.options.Tls.Enabled {
+		conn, err = tls.Dial("tcp", b.options.Endpoint, tlsConfig)
+	} else {
+		conn, err = net.Dial("tcp", b.options.Endpoint)
+	}
 
 	if err != nil {
 		log.Println(err)
