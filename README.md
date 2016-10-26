@@ -1,5 +1,5 @@
 # web2tcp-proxy
-web2tcp-proxy is a simple bridging proxy application to allow Web applications running the browser to connect to a TCP server through a SockJS/Websocket interface and communicate with it.
+web2tcp-proxy is a simple bridging proxy server to allow Web applications running in the browser to connect to a TCP server through a SockJS/Websocket interface and communicate with it.
 
 **Warning:** Note that while the basic functionality works, several features are yet to be implemented.
 
