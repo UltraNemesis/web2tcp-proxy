@@ -5,7 +5,7 @@ web2tcp-proxy is a simple bridging proxy application to allow Web applications r
 
 ## Build
 
-web2tcp-proxy is written in Go langauge. In order to obtain and build the code, make sure you have Go tooling in the PATH and run the following command.
+web2tcp-proxy is written in Go langauge. In order to use it, make sure you have Go tooling in the PATH and run the following command. This will get the code and its dependencies, build it and will put the executable for your current platform in the bin directory.   
 
     go get github.com/UltraNemesis/web2tcp-proxy
     
