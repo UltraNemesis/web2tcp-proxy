@@ -5,15 +5,18 @@ web2tcp-proxy is a simple bridging proxy application to allow Web applications r
 
 ## Build
 
-web2tcp-proxy is build in Go langauge. In order to build the code, make sure you have Go tooling in the PATH and run the following command.
+web2tcp-proxy is written in Go langauge. In order to obtain and build the code, make sure you have Go tooling in the PATH and run the following command.
 
     go get github.com/UltraNemesis/web2tcp-proxy
     
 
 ##Running
 
-Update the provided configuration file as per requirement and and ensure that its in the same directory as the executable. Then run the executable.
- 
+Update the provided sample configuration file as per requirement. Frontend part refers to the HTTP server part that will handle the SockJS/WebSocket connections. Backend refers the tcp server to which the connections are bridged. 
+
+Note that the configuration file can be in yaml or toml format as well as long as the same overall structure is maintained.
+
+Once the configuration is ready, ensure that the file is in the same directory as the executable and run the executable. 
 
     {
       "frontend" : {
@@ -35,8 +38,6 @@ Update the provided configuration file as per requirement and and ensure that it
         }     
       }
     }
-
-Note that the configuration file can be in yaml or toml format as well.
 
 ##Client side
 
