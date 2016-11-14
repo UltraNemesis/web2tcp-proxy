@@ -4,6 +4,7 @@ package web2tcp
 import (
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
@@ -62,13 +63,30 @@ func (f *Frontend) RouteHandler(route string, handler func(Session)) {
 
 	f.router.PathPrefix("/" + route + "/websocket").HandlerFunc(func(resp http.ResponseWriter, req *http.Request) {
 		wsConn, _ := wsUpgrader.Upgrade(resp, req, nil)
-		//go handler(&wsSession{conn: wsConn})
-		go handler(newWSSession(wsConn))
+		xfHeader := req.Header.Get("X-Forwarded-For")
+		var clientAddr string
+
+		if len(xfHeader) > 0 {
+			clientAddr = strings.Split(xfHeader, ",")[0]
+		} else {
+			clientAddr = wsConn.RemoteAddr().String()
+		}
+
+		go handler(newWSSession(wsConn, clientAddr))
 	})
 
 	sockjsHandler := sockjs.NewHandler("/"+route, sockjsOptions, func(session sockjs.Session) {
-		go handler(newSockJSSession(session))
-		//go handler(&sjsSession{conn: session})
+		var clientAddr string
+
+		xfHeader := session.Request().Header.Get("X-Forwarded-For")
+
+		if len(xfHeader) > 0 {
+			clientAddr = strings.Split(xfHeader, ",")[0]
+		} else {
+			clientAddr = session.Request().RemoteAddr
+		}
+
+		go handler(newSockJSSession(session, clientAddr))
 	})
 
 	f.router.PathPrefix("/" + route + "/").Handler(sockjsHandler)

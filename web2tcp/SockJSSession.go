@@ -9,14 +9,16 @@ import (
 
 type sjsSession struct {
 	SessionBase
-	conn   sockjs.Session
-	active bool
+	conn       sockjs.Session
+	clientAddr string
+	active     bool
 }
 
-func newSockJSSession(conn sockjs.Session) *sjsSession {
+func newSockJSSession(conn sockjs.Session, clientAddr string) *sjsSession {
 	s := &sjsSession{
 		SessionBase: newSessionBase("sockjs"),
 		conn:        conn,
+		clientAddr:  clientAddr,
 		active:      true,
 	}
 
@@ -44,4 +46,8 @@ func (s *sjsSession) Close() error {
 
 func (s *sjsSession) IsActive() bool {
 	return s.active
+}
+
+func (s *sjsSession) RemoteAddr() string {
+	return s.clientAddr
 }

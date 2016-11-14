@@ -8,6 +8,7 @@ type Session interface {
 	Write(data string) error
 	Close() error
 	IsActive() bool
+	RemoteAddr() string
 }
 
 type SessionBase struct {

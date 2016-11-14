@@ -50,6 +50,10 @@ func (s *tcpSession) Write(data string) error {
 	return err
 }
 
+func (s *tcpSession) WriteProxyHeader(srcAddr net.IPAddr, srcPort int, dstAddr net.IPAddr, dstPort int) {
+
+}
+
 func (s *tcpSession) Close() error {
 	var err error
 
@@ -63,4 +67,8 @@ func (s *tcpSession) Close() error {
 
 func (s *tcpSession) IsActive() bool {
 	return s.active
+}
+
+func (s *tcpSession) RemoteAddr() string {
+	return s.conn.RemoteAddr().String()
 }

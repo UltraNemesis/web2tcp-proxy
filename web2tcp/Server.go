@@ -30,8 +30,9 @@ func NewServer(conf Configuration) *Web2TCPServer {
 }
 
 func setupTunnel(route string, frontend *Frontend, backend *Backend) {
+	log.Println("Setting up a frontend to backend tunnel")
 	frontend.RouteHandler(route, func(feSession Session) {
-		log.Println("New Session, Type : ", feSession.Type(), ", ID : ", feSession.ID())
+		log.Println("New Session, Type : ", feSession.Type(), ", ID : ", feSession.ID(), ", From : ", feSession.RemoteAddr())
 
 		beSession, err := backend.NewSession()
 

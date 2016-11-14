@@ -11,16 +11,18 @@ import (
 
 type wsSession struct {
 	SessionBase
-	conn      *websocket.Conn
-	readLock  sync.Mutex
-	writeLock sync.Mutex
-	active    bool
+	conn       *websocket.Conn
+	clientAddr string
+	readLock   sync.Mutex
+	writeLock  sync.Mutex
+	active     bool
 }
 
-func newWSSession(conn *websocket.Conn) *wsSession {
+func newWSSession(conn *websocket.Conn, clientAddr string) *wsSession {
 	s := &wsSession{
 		SessionBase: newSessionBase("ws"),
 		conn:        conn,
+		clientAddr:  clientAddr,
 		active:      true,
 	}
 
@@ -54,4 +56,8 @@ func (s *wsSession) Close() error {
 
 func (s *wsSession) IsActive() bool {
 	return s.active
+}
+
+func (s *wsSession) RemoteAddr() string {
+	return s.clientAddr
 }
