@@ -9,6 +9,7 @@ type Session interface {
 	Close() error
 	IsActive() bool
 	RemoteAddr() string
+	LocalAddr() string
 }
 
 type SessionBase struct {

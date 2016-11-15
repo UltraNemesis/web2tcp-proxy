@@ -68,8 +68,11 @@ func (f *Frontend) RouteHandler(route string, handler func(Session)) {
 
 		if len(xfHeader) > 0 {
 			clientAddr = strings.Split(xfHeader, ",")[0]
+			if !strings.ContainsRune(clientAddr, ':') {
+				clientAddr = clientAddr + ":0"
+			}
 		} else {
-			clientAddr = wsConn.RemoteAddr().String()
+			clientAddr = req.RemoteAddr
 		}
 
 		go handler(newWSSession(wsConn, clientAddr))
@@ -82,9 +85,15 @@ func (f *Frontend) RouteHandler(route string, handler func(Session)) {
 
 		if len(xfHeader) > 0 {
 			clientAddr = strings.Split(xfHeader, ",")[0]
+
+			if !strings.ContainsRune(clientAddr, ':') {
+				clientAddr = clientAddr + ":0"
+			}
 		} else {
 			clientAddr = session.Request().RemoteAddr
 		}
+
+		log.Println(session.Request().Context().Value(http.LocalAddrContextKey))
 
 		go handler(newSockJSSession(session, clientAddr))
 	})

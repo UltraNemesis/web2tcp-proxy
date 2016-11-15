@@ -55,7 +55,7 @@ func NewBackend(options *BackendOptions) *Backend {
 	return backend
 }
 
-func (b *Backend) NewSession() (Session, error) {
+func (b *Backend) NewSession(clientAddr string) (Session, error) {
 
 	var conn net.Conn
 	var err error
@@ -70,5 +70,11 @@ func (b *Backend) NewSession() (Session, error) {
 		log.Println(err)
 	}
 
-	return newTcpSession(conn), err
+	beSession := newTcpSession(conn)
+
+	if b.options.ProxyProtocol {
+		beSession.WriteProxyHeader(clientAddr)
+	}
+
+	return beSession, err
 }

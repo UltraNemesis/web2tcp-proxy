@@ -4,6 +4,8 @@ package web2tcp
 import (
 	"bufio"
 	"encoding/base64"
+	"fmt"
+	"log"
 	"net"
 )
 
@@ -50,8 +52,15 @@ func (s *tcpSession) Write(data string) error {
 	return err
 }
 
-func (s *tcpSession) WriteProxyHeader(srcAddr net.IPAddr, srcPort int, dstAddr net.IPAddr, dstPort int) {
+func (s *tcpSession) WriteProxyHeader(clientAddr string) {
+	srcIP, srcPort, proto := parseNetAddr(clientAddr)
+	dstIP, dstPort, _ := parseNetAddr(s.conn.LocalAddr().String())
 
+	_, err := fmt.Fprintf(s.conn, "PROXY %s %s %s %d %d\r\n", proto, srcIP, dstIP, srcPort, dstPort)
+
+	if err != nil {
+		log.Println(err)
+	}
 }
 
 func (s *tcpSession) Close() error {
@@ -71,4 +80,36 @@ func (s *tcpSession) IsActive() bool {
 
 func (s *tcpSession) RemoteAddr() string {
 	return s.conn.RemoteAddr().String()
+}
+
+func (s *tcpSession) LocalAddr() string {
+	return s.conn.LocalAddr().String()
+}
+
+func parseNetAddr(addrStr string) (string, int, string) {
+	addr, err := net.ResolveTCPAddr("tcp", addrStr)
+
+	var protocol string = "UNKNOWN"
+	var ip string = "0.0.0.0"
+	var port int = 0
+
+	if err != nil {
+		fmt.Println(err)
+
+		return ip, port, protocol
+	}
+
+	protocol = "TCP6"
+	port = addr.Port
+
+	if addr.IP.To4() != nil {
+		protocol = "TCP4"
+		ip = addr.IP.To4().String()
+	} else {
+		ip = addr.IP.String()
+	}
+
+	log.Println("IP=", ip, "Port=", port, "Protocol=", protocol)
+
+	return ip, port, protocol
 }

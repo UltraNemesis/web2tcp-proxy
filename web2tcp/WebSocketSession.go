@@ -61,3 +61,7 @@ func (s *wsSession) IsActive() bool {
 func (s *wsSession) RemoteAddr() string {
 	return s.clientAddr
 }
+
+func (s *wsSession) LocalAddr() string {
+	return s.conn.LocalAddr().String()
+}

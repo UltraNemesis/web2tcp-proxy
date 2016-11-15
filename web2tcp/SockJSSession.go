@@ -51,3 +51,8 @@ func (s *sjsSession) IsActive() bool {
 func (s *sjsSession) RemoteAddr() string {
 	return s.clientAddr
 }
+
+func (s *sjsSession) LocalAddr() string {
+	//return s.conn.Request().
+	return ""
+}
