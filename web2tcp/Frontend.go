@@ -2,7 +2,9 @@
 package web2tcp
 
 import (
+	"crypto/tls"
 	"log"
+	"net"
 	"net/http"
 	"strings"
 
@@ -45,13 +47,31 @@ func NewFrontend(options *FrontendOptions) *Frontend {
 
 func (f Frontend) Listen() {
 	var err error
+	var listener net.Listener
+
 	http.Handle("/", f.router)
 
 	if f.options.Tls.Enabled {
-		err = http.ListenAndServeTLS(f.options.Endpoint, f.options.Tls.CertFile, f.options.Tls.CertKeyFile, nil)
+		cert, certErr := tls.LoadX509KeyPair(f.options.Tls.CertFile, f.options.Tls.CertKeyFile)
+
+		if certErr != nil {
+			log.Println(certErr)
+			return
+		}
+
+		tlsConfig := &tls.Config{
+			Certificates: []tls.Certificate{cert},
+		}
+
+		listener, err = tls.Listen("tcp4", f.options.Endpoint, tlsConfig)
+		//err = http.ListenAndServeTLS(f.options.Endpoint, f.options.Tls.CertFile, f.options.Tls.CertKeyFile, nil)
 	} else {
-		err = http.ListenAndServe(f.options.Endpoint, nil)
+		listener, err = net.Listen("tcp4", f.options.Endpoint)
+		//err = http.ListenAndServe(f.options.Endpoint, nil)
 	}
+
+	http.Serve(listener, nil)
+
 	if err != nil {
 		log.Panic(err)
 	}
@@ -92,8 +112,6 @@ func (f *Frontend) RouteHandler(route string, handler func(Session)) {
 		} else {
 			clientAddr = session.Request().RemoteAddr
 		}
-
-		log.Println(session.Request().Context().Value(http.LocalAddrContextKey))
 
 		go handler(newSockJSSession(session, clientAddr))
 	})

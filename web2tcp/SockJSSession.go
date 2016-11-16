@@ -3,6 +3,8 @@ package web2tcp
 
 import (
 	//"log"
+	"net"
+	"net/http"
 
 	"github.com/igm/sockjs-go/sockjs"
 )
@@ -53,6 +55,5 @@ func (s *sjsSession) RemoteAddr() string {
 }
 
 func (s *sjsSession) LocalAddr() string {
-	//return s.conn.Request().
-	return ""
+	return s.conn.Request().Context().Value(http.LocalAddrContextKey).(net.Addr).String()
 }

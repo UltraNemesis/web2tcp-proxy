@@ -52,9 +52,9 @@ func (s *tcpSession) Write(data string) error {
 	return err
 }
 
-func (s *tcpSession) WriteProxyHeader(clientAddr string) {
-	srcIP, srcPort, proto := parseNetAddr(clientAddr)
-	dstIP, dstPort, _ := parseNetAddr(s.conn.LocalAddr().String())
+func (s *tcpSession) WriteProxyHeader(feSession Session) {
+	srcIP, srcPort, proto := parseNetAddr(feSession.RemoteAddr())
+	dstIP, dstPort, _ := parseNetAddr(feSession.LocalAddr())
 
 	_, err := fmt.Fprintf(s.conn, "PROXY %s %s %s %d %d\r\n", proto, srcIP, dstIP, srcPort, dstPort)
 

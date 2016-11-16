@@ -55,15 +55,14 @@ func NewBackend(options *BackendOptions) *Backend {
 	return backend
 }
 
-func (b *Backend) NewSession(clientAddr string) (Session, error) {
-
+func (b *Backend) NewProxySession(feSession Session) (Session, error) {
 	var conn net.Conn
 	var err error
 
 	if b.options.Tls.Enabled {
-		conn, err = tls.Dial("tcp", b.options.Endpoint, b.tlsConfig)
+		conn, err = tls.Dial("tcp4", b.options.Endpoint, b.tlsConfig)
 	} else {
-		conn, err = net.Dial("tcp", b.options.Endpoint)
+		conn, err = net.Dial("tcp4", b.options.Endpoint)
 	}
 
 	if err != nil {
@@ -73,7 +72,7 @@ func (b *Backend) NewSession(clientAddr string) (Session, error) {
 	beSession := newTcpSession(conn)
 
 	if b.options.ProxyProtocol {
-		beSession.WriteProxyHeader(clientAddr)
+		beSession.WriteProxyHeader(feSession)
 	}
 
 	return beSession, err

@@ -34,7 +34,7 @@ func setupTunnel(route string, frontend *Frontend, backend *Backend) {
 	frontend.RouteHandler(route, func(feSession Session) {
 		log.Println("New Session, Type : ", feSession.Type(), ", ID : ", feSession.ID(), ", From : ", feSession.RemoteAddr())
 
-		beSession, err := backend.NewSession(feSession.RemoteAddr())
+		beSession, err := backend.NewProxySession(feSession)
 
 		if err == nil {
 			go pipeHandler(feSession, beSession)
